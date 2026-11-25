@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -7,33 +7,28 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700;800&family=Space+Grotesk:wght@500;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
       --neon-green: #39ff14;
       --neon-red: #ff2a55;
-      --neon-orange: #ff6b00;
       --neon-cyan: #00f0ff;
       --neon-gold: #ffd700;
-      --bg-dark: #070a0f;
     }
 
     * {
       box-sizing: border-box;
-      user-select: none;
-      -webkit-user-select: none;
       -webkit-tap-highlight-color: transparent;
+      user-select: none;
     }
 
-    html, body {
+    body {
       margin: 0;
       padding: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background-color: var(--bg-dark);
+      font-family: 'Inter', sans-serif;
+      background-color: #060913;
       color: #f8fafc;
-      font-family: 'Space Grotesk', sans-serif;
+      overflow: hidden;
       touch-action: manipulation;
     }
 
@@ -41,1087 +36,918 @@
       font-family: 'JetBrains Mono', monospace;
     }
 
-    /* Cyber Desktop Grid Background */
+    /* Subtle Cyberpunk Grid Background */
     .cyber-grid {
-      background-color: #070a0f;
+      background-color: #060913;
       background-image:
-        radial-gradient(circle at 50% 0%, rgba(57, 255, 20, 0.08), transparent 55%),
-        radial-gradient(circle at 85% 90%, rgba(255, 42, 85, 0.08), transparent 50%),
-        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-      background-size: 100% 100%, 100% 100%, 36px 36px, 36px 36px;
+        linear-gradient(rgba(0, 240, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, 0.04) 1px, transparent 1px),
+        radial-gradient(circle at 50% 0%, rgba(57, 255, 20, 0.08), transparent 60%),
+        radial-gradient(circle at 80% 100%, rgba(255, 42, 85, 0.08), transparent 55%);
+      background-size: 36px 36px, 36px 36px, 100% 100%, 100% 100%;
     }
 
-    /* Subtle CRT Scanline Overlay */
-    .crt-overlay {
+    /* Scanline overlay */
+    .scanlines::after {
+      content: "";
+      position: fixed;
+      inset: 0;
       pointer-events: none;
-      background: linear-gradient(
-        rgba(18, 16, 16, 0) 50%,
-        rgba(0, 0, 0, 0.18) 50%
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.14) 0px,
+        rgba(0, 0, 0, 0.14) 1px,
+        transparent 1px,
+        transparent 3px
       );
-      background-size: 100% 4px;
+      z-index: 50;
     }
 
-    /* Animations */
-    @keyframes popIn {
-      0% {
-        transform: scale(0.65) translateY(12px);
-        opacity: 0;
-      }
-      70% {
-        transform: scale(1.04) translateY(-2px);
-        opacity: 1;
-      }
-      100% {
-        transform: scale(1) translateY(0);
-        opacity: 1;
-      }
-    }
-
+    /* Screen Shake Animation */
     @keyframes screenShake {
       0%, 100% { transform: translate(0, 0); }
-      15% { transform: translate(-8px, 5px); }
-      30% { transform: translate(8px, -6px); }
-      45% { transform: translate(-6px, -4px); }
-      60% { transform: translate(6px, 4px); }
+      15% { transform: translate(-7px, 4px); }
+      30% { transform: translate(7px, -5px); }
+      45% { transform: translate(-5px, -3px); }
+      60% { transform: translate(5px, 4px); }
       75% { transform: translate(-3px, 2px); }
     }
-
-    @keyframes floatUpFade {
-      0% {
-        transform: translate(-50%, 0) scale(0.85);
-        opacity: 1;
-      }
-      30% {
-        transform: translate(-50%, -18px) scale(1.1);
-        opacity: 1;
-      }
-      100% {
-        transform: translate(-50%, -56px) scale(0.95);
-        opacity: 0;
-      }
-    }
-
-    @keyframes pulseGlowGreen {
-      0%, 100% { box-shadow: 0 0 18px rgba(57, 255, 20, 0.35), inset 0 0 10px rgba(57, 255, 20, 0.15); }
-      50% { box-shadow: 0 0 32px rgba(57, 255, 20, 0.65), inset 0 0 16px rgba(57, 255, 20, 0.3); }
-    }
-
-    @keyframes pulseGlowPowerup {
-      0%, 100% { box-shadow: 0 0 18px rgba(0, 240, 255, 0.55), 0 0 34px rgba(255, 215, 0, 0.25); transform: scale(1); }
-      50% { box-shadow: 0 0 28px rgba(0, 240, 255, 0.9), 0 0 46px rgba(255, 215, 0, 0.45); transform: scale(1.04); }
-    }
-
-    @keyframes scamGlitchBorder {
-      0%, 92%, 100% { border-color: rgba(255, 42, 85, 0.9); }
-      95% { border-color: rgba(255, 107, 0, 1); }
-      98% { border-color: rgba(255, 0, 170, 1); }
-    }
-
-    .animate-pop-in {
-      animation: popIn 0.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-    }
-
-    .shake-active {
+    .shake {
       animation: screenShake 0.32s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
     }
 
-    .floating-score {
-      position: absolute;
-      pointer-events: none;
-      z-index: 60;
-      font-weight: 800;
-      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
-      animation: floatUpFade 0.85s ease-out forwards;
-      white-space: nowrap;
+    /* Popup Spawn Animation */
+    @keyframes popIn {
+      0% { transform: scale(0.75); opacity: 0; }
+      70% { transform: scale(1.04); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
     }
 
-    /* Popup Card Base Styles */
+    /* Game Window Styles */
     .game-window {
       position: absolute;
+      width: 240px;
       border-radius: 12px;
       overflow: hidden;
       cursor: pointer;
-      will-change: transform, opacity;
+      animation: popIn 0.18s ease-out forwards;
       transition: transform 0.08s ease;
+      z-index: 20;
+    }
+
+    @media (max-width: 640px) {
+      .game-window {
+        width: 205px;
+      }
     }
 
     .game-window:active {
-      transform: scale(0.94);
+      transform: scale(0.95);
     }
 
     .window-scam {
-      background: linear-gradient(160deg, #1d0c14 0%, #12080d 100%);
+      background: linear-gradient(180deg, #2a0a14 0%, #14050a 100%);
       border: 2px solid var(--neon-red);
-      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.7), 0 0 18px rgba(255, 42, 85, 0.35);
-      animation: popIn 0.18s cubic-bezier(0.22, 1, 0.36, 1) forwards, scamGlitchBorder 2.4s infinite;
+      box-shadow: 0 0 22px rgba(255, 42, 85, 0.4), inset 0 0 12px rgba(255, 42, 85, 0.15);
     }
 
     .window-legit {
-      background: linear-gradient(160deg, #0b1c12 0%, #07120c 100%);
+      background: linear-gradient(180deg, #072612 0%, #04140a 100%);
       border: 2px solid var(--neon-green);
-      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.65), 0 0 18px rgba(57, 255, 20, 0.28);
-      animation: popIn 0.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      box-shadow: 0 0 20px rgba(57, 255, 20, 0.35), inset 0 0 12px rgba(57, 255, 20, 0.12);
+    }
+
+    @keyframes powerupPulse {
+      0%, 100% { box-shadow: 0 0 18px rgba(0, 240, 255, 0.6), 0 0 32px rgba(255, 215, 0, 0.35); transform: scale(1); }
+      50% { box-shadow: 0 0 28px rgba(0, 240, 255, 0.9), 0 0 46px rgba(255, 215, 0, 0.6); transform: scale(1.04); }
     }
 
     .window-powerup {
-      background: linear-gradient(145deg, #071c26 0%, #171226 100%);
+      width: 175px;
+      background: linear-gradient(135deg, #07283b 0%, #1c1a05 100%);
       border: 2px solid var(--neon-cyan);
-      animation: popIn 0.2s ease forwards, pulseGlowPowerup 1.1s ease-in-out infinite;
+      animation: popIn 0.18s ease-out forwards, powerupPulse 1.1s infinite ease-in-out;
+      z-index: 25;
     }
 
+    /* Floating Text */
+    @keyframes floatUp {
+      0% { transform: translate(-50%, 0) scale(0.9); opacity: 1; }
+      100% { transform: translate(-50%, -58px) scale(1.1); opacity: 0; }
+    }
+    .floating-text {
+      position: absolute;
+      pointer-events: none;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 800;
+      font-size: 0.95rem;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.95);
+      animation: floatUp 0.85s ease-out forwards;
+      z-index: 35;
+      white-space: nowrap;
+    }
+
+    /* Primary Neon Button */
     .btn-neon-green {
-      background: linear-gradient(135deg, #2ee60e 0%, #19a807 100%);
-      color: #041202;
-      animation: pulseGlowGreen 2s infinite;
-      transition: transform 0.12s ease, filter 0.12s ease;
+      background: linear-gradient(135deg, #39ff14 0%, #00d084 100%);
+      color: #041208;
+      box-shadow: 0 0 22px rgba(57, 255, 20, 0.45);
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
     }
-
     .btn-neon-green:hover {
-      filter: brightness(1.12);
       transform: translateY(-2px);
+      box-shadow: 0 0 32px rgba(57, 255, 20, 0.75);
     }
-
     .btn-neon-green:active {
-      transform: scale(0.96);
+      transform: scale(0.97);
     }
 
-    .damage-flash {
+    /* Flash overlays */
+    .flash-overlay {
+      position: fixed;
+      inset: 0;
       pointer-events: none;
       opacity: 0;
-      transition: opacity 0.22s ease-out;
-      background: radial-gradient(circle at center, rgba(255, 42, 85, 0.12) 20%, rgba(255, 20, 60, 0.6) 100%);
-    }
-
-    .damage-flash.active {
-      opacity: 1;
-      transition: opacity 0.04s ease-in;
-    }
-
-    .nuke-flash {
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.35s ease-out;
-      background: radial-gradient(circle at center, rgba(0, 240, 255, 0.45) 0%, rgba(57, 255, 20, 0.2) 60%, transparent 100%);
-    }
-
-    .nuke-flash.active {
-      opacity: 1;
-      transition: opacity 0.04s ease-in;
+      transition: opacity 0.25s ease-out;
+      z-index: 30;
     }
   </style>
 </head>
-<body class="cyber-grid flex flex-col h-full w-full overflow-hidden">
+<body class="cyber-grid scanlines h-screen w-screen flex flex-col overflow-hidden">
 
-  <!-- Main Wrapper (Shakes on damage) -->
-  <div id="gameContainer" class="relative flex flex-col w-full h-full overflow-hidden">
+  <!-- Red Damage Flash & Cyan Nuke Flash -->
+  <div id="damageFlash" class="flash-overlay bg-rose-600/30"></div>
+  <div id="nukeFlash" class="flash-overlay bg-cyan-400/30"></div>
 
-    <!-- Subtle CRT Scanlines -->
-    <div class="crt-overlay fixed inset-0 z-50"></div>
-
-    <!-- Red Damage Vignette Flash -->
-    <div id="damageFlash" class="damage-flash fixed inset-0 z-40"></div>
-
-    <!-- Cyan AdBlock Nuke Flash -->
-    <div id="nukeFlash" class="nuke-flash fixed inset-0 z-40"></div>
-
-    <!-- Top HUD Bar -->
-    <header class="relative z-30 w-full bg-slate-950/90 backdrop-blur-md border-b border-slate-800/90 px-3 py-2 sm:px-5 sm:py-3 flex flex-wrap items-center justify-between gap-2 shadow-lg">
-      <!-- Left: Brand & Hype Level -->
-      <div class="flex items-center gap-2 sm:gap-3">
-        <div class="flex items-center gap-1.5 bg-slate-900 border border-slate-700/80 px-2.5 py-1 rounded-lg">
-          <span class="w-2.5 h-2.5 rounded-full bg-[#39ff14] shadow-[0_0_8px_#39ff14] animate-pulse"></span>
-          <span class="font-extrabold tracking-tight text-xs sm:text-sm text-white">BULLSHIT<span class="text-[#39ff14]">BLOCKER</span></span>
-        </div>
-        <div id="hypeBadge" class="font-mono-tech text-[11px] sm:text-xs font-bold px-2 py-1 rounded-md bg-orange-500/15 border border-orange-500/40 text-orange-400">
-          HYPE LVL 1
-        </div>
+  <!-- TOP HUD -->
+  <header class="relative z-30 w-full bg-slate-950/90 border-b border-slate-800/90 backdrop-blur-md px-3 sm:px-5 py-2.5 flex items-center justify-between gap-2 shadow-lg">
+    <!-- Left: Score, Combo, High Score -->
+    <div class="flex items-center gap-2 sm:gap-4">
+      <div class="bg-slate-900/90 border border-slate-700/80 rounded-lg px-2.5 py-1">
+        <div class="text-[9px] sm:text-[10px] font-mono-tech uppercase tracking-wider text-slate-400">Score</div>
+        <div id="scoreDisplay" class="font-mono-tech text-base sm:text-xl font-extrabold text-white leading-tight">0</div>
       </div>
 
-      <!-- Center: Score & Combo -->
-      <div class="flex items-center gap-3 sm:gap-5">
-        <div class="text-center">
-          <div class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Score</div>
-          <div id="scoreDisplay" class="font-mono-tech text-lg sm:text-2xl font-extrabold text-white leading-none">0</div>
-        </div>
-
-        <div id="comboBox" class="text-center px-2.5 py-1 rounded-lg bg-slate-900/90 border border-slate-700 transition-transform duration-150">
-          <div class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Combo</div>
-          <div id="comboDisplay" class="font-mono-tech text-sm sm:text-lg font-extrabold text-[#39ff14] leading-none">x1</div>
-        </div>
-
-        <div class="hidden md:block text-center">
-          <div class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">High Score</div>
-          <div id="highScoreHud" class="font-mono-tech text-lg font-bold text-amber-400 leading-none">0</div>
-        </div>
+      <div id="comboBox" class="bg-slate-900/90 border border-slate-700/80 rounded-lg px-2.5 py-1 transition-transform duration-100">
+        <div class="text-[9px] sm:text-[10px] font-mono-tech uppercase tracking-wider text-slate-400">Combo</div>
+        <div id="comboDisplay" class="font-mono-tech text-base sm:text-xl font-extrabold text-cyan-400 leading-tight">x1</div>
       </div>
 
-      <!-- Right: PC Health & Sound Toggle -->
-      <div class="flex items-center gap-2 sm:gap-3">
-        <div id="healthDisplay" class="flex items-center gap-1 bg-slate-900/90 border border-slate-700/80 px-2.5 py-1.5 rounded-lg" title="PC Gezondheid (Antivirus)">
-          <!-- Hearts rendered via JS -->
-        </div>
-
-        <button id="muteBtn" class="p-2 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 transition active:scale-95" aria-label="Geluid aan/uit" title="Geluid aan/uit">
-          <svg id="soundOnIcon" class="w-5 h-5 text-[#39ff14]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-          </svg>
-          <svg id="soundOffIcon" class="w-5 h-5 text-rose-500 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-            <path stroke-linecap="round" stroke-linejoin="round" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
-          </svg>
-        </button>
-      </div>
-    </header>
-
-    <!-- Main Playfield (Cyber Desktop Area) -->
-    <main id="playfield" class="relative flex-1 w-full overflow-hidden">
-      <!-- Subtle Desktop Watermark -->
-      <div class="pointer-events-none absolute inset-0 flex flex-col items-center justify-center opacity-[0.045] select-none px-4 text-center">
-        <div class="font-mono-tech text-3xl sm:text-6xl font-extrabold tracking-widest text-white">GTA VI PC PORT</div>
-        <div class="font-mono-tech text-sm sm:text-xl tracking-[0.35em] text-[#39ff14] mt-2">DESKTOP PROTECTION ACTIVE</div>
-      </div>
-
-      <!-- Fake Desktop Icons (Decoration) -->
-      <div class="pointer-events-none absolute top-4 left-4 hidden sm:flex flex-col gap-4 opacity-30">
-        <div class="flex flex-col items-center w-16 text-center">
-          <div class="w-10 h-10 rounded-lg bg-slate-800 border border-slate-600 flex items-center justify-center text-lg">🗑️</div>
-          <span class="text-[10px] font-mono-tech mt-1 text-slate-300">Prullenbak</span>
-        </div>
-        <div class="flex flex-col items-center w-16 text-center">
-          <div class="w-10 h-10 rounded-lg bg-slate-800 border border-slate-600 flex items-center justify-center text-lg">📁</div>
-          <span class="text-[10px] font-mono-tech mt-1 text-slate-300">GTA6_Leaks</span>
-        </div>
-        <div class="flex flex-col items-center w-16 text-center">
-          <div class="w-10 h-10 rounded-lg bg-slate-800 border border-slate-600 flex items-center justify-center text-lg">🛡️</div>
-          <span class="text-[10px] font-mono-tech mt-1 text-slate-300">Defender</span>
-        </div>
-      </div>
-
-      <!-- Particle Effects Canvas -->
-      <canvas id="particleCanvas" class="pointer-events-none absolute inset-0 z-20"></canvas>
-
-      <!-- Active Pop-ups Layer -->
-      <div id="popupLayer" class="absolute inset-0 z-10 overflow-hidden"></div>
-    </main>
-
-    <!-- Bottom Cyber Taskbar (Decorative Status) -->
-    <footer class="relative z-30 w-full bg-slate-950/90 border-t border-slate-800/80 px-4 py-1.5 flex items-center justify-between text-[11px] font-mono-tech text-slate-400">
-      <div class="flex items-center gap-2">
-        <span class="inline-block w-2 h-2 rounded-full bg-emerald-400"></span>
-        <span id="statusTicker" class="truncate max-w-[230px] sm:max-w-md">Wachten op start... Bescherm je PC tegen neppe GTA VI ports.</span>
-      </div>
-      <div class="hidden sm:flex items-center gap-4">
-        <span>SCAMS GEBLOKT: <strong id="blockedFooter" class="text-white">0</strong></span>
-        <span class="text-[#39ff14]">BULLSHIT OFF MODE</span>
-      </div>
-    </footer>
-
-    <!-- START SCREEN OVERLAY -->
-    <div id="startScreen" class="fixed inset-0 z-40 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4">
-      <div class="w-full max-w-lg bg-slate-900/95 border border-slate-700/80 rounded-2xl p-6 sm:p-8 shadow-2xl text-center relative overflow-hidden">
-        <!-- Decorative Top Glow -->
-        <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#ff2a55] via-amber-400 to-[#39ff14]"></div>
-
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/15 border border-rose-500/40 text-rose-400 font-mono-tech text-xs font-bold mb-3">
-          <span>⚠️</span> GTA VI PC PORT EDITION
-        </div>
-
-        <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
-          BULLSHIT <span class="text-[#39ff14] drop-shadow-[0_0_12px_rgba(57,255,20,0.6)]">BLOCKER</span>
-        </h1>
-
-        <p class="mt-3 text-slate-300 text-sm sm:text-base leading-relaxed">
-          Klik alle <strong class="text-rose-400">rode SCAM pop-ups</strong> weg voor ze klaar zijn met laden.
-          Raak de <strong class="text-[#39ff14]">groene LEGIT updates</strong> NIET aan!
-        </p>
-
-        <!-- Mini Visual Legend -->
-        <div class="grid grid-cols-3 gap-2 sm:gap-3 mt-5 text-left">
-          <div class="bg-rose-950/40 border border-rose-500/50 rounded-xl p-2.5 sm:p-3">
-            <div class="text-rose-400 font-mono-tech text-[11px] font-bold">❌ SCAM</div>
-            <div class="text-xs text-slate-200 font-semibold mt-0.5">Wegklikken!</div>
-            <div class="text-[10px] text-slate-400 mt-0.5">Voorkom virus</div>
-          </div>
-
-          <div class="bg-emerald-950/40 border border-[#39ff14]/50 rounded-xl p-2.5 sm:p-3">
-            <div class="text-[#39ff14] font-mono-tech text-[11px] font-bold">✅ LEGIT</div>
-            <div class="text-xs text-slate-200 font-semibold mt-0.5">Niet klikken!</div>
-            <div class="text-[10px] text-slate-400 mt-0.5">+150 bonus</div>
-          </div>
-
-          <div class="bg-cyan-950/40 border border-cyan-400/50 rounded-xl p-2.5 sm:p-3">
-            <div class="text-cyan-300 font-mono-tech text-[11px] font-bold">🛡️ ADBLOCK</div>
-            <div class="text-xs text-slate-200 font-semibold mt-0.5">Pakken!</div>
-            <div class="text-[10px] text-slate-400 mt-0.5">Wist alle scams</div>
-          </div>
-        </div>
-
-        <div class="mt-6 flex flex-col items-center gap-3">
-          <button id="startBtn" class="btn-neon-green w-full sm:w-auto px-10 py-3.5 rounded-xl font-extrabold text-lg tracking-wide uppercase cursor-pointer">
-            START GAME
-          </button>
-          <div class="font-mono-tech text-xs text-slate-400">
-            HIGH SCORE: <span id="startHighScore" class="text-amber-400 font-bold">0</span>
-          </div>
-        </div>
+      <div class="hidden md:block bg-slate-900/90 border border-slate-700/80 rounded-lg px-2.5 py-1">
+        <div class="text-[10px] font-mono-tech uppercase tracking-wider text-slate-400">High Score</div>
+        <div id="highScoreHud" class="font-mono-tech text-xl font-extrabold text-amber-400 leading-tight">0</div>
       </div>
     </div>
 
-    <!-- GAME OVER SCREEN OVERLAY -->
-    <div id="gameOverScreen" class="fixed inset-0 z-40 bg-slate-950/90 backdrop-blur-md hidden items-center justify-center p-4">
-      <div class="w-full max-w-md bg-slate-900/95 border-2 border-rose-500/70 rounded-2xl p-6 sm:p-8 shadow-[0_0_50px_rgba(255,42,85,0.25)] text-center relative overflow-hidden">
-        <div class="inline-block px-3 py-1 rounded-full bg-rose-500/20 border border-rose-500/50 text-rose-400 font-mono-tech text-xs font-bold mb-2">
-          BULLSHIT OVERLOAD
-        </div>
+    <!-- Center: Hype Level Badge -->
+    <div class="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/15 border border-rose-500/40">
+      <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
+      <span id="hypeBadge" class="font-mono-tech text-xs font-bold text-rose-300 tracking-wider">HYPE LVL 1</span>
+    </div>
 
-        <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-          JE PC IS GEHACKT!
-        </h2>
-        <p id="deathReason" class="text-xs sm:text-sm text-rose-300 font-mono-tech mt-1.5">
-          GTA6_PC_PORT_500KB.exe draait nu op de achtergrond...
-        </p>
+    <!-- Right: Windows Defender Shields & Mute Toggle -->
+    <div class="flex items-center gap-2">
+      <div id="healthDisplay" class="flex items-center gap-0.5 sm:gap-1 bg-slate-900/90 border border-slate-700/80 px-2 sm:px-2.5 py-1.5 rounded-lg" title="Windows Defender Integrity">
+        <!-- 5 Shields rendered via JS -->
+      </div>
 
-        <!-- Rank Badge -->
-        <div class="mt-5 bg-slate-950/80 border border-slate-700 rounded-xl p-3">
-          <div class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Jouw Rang</div>
-          <div id="rankTitle" class="text-xl sm:text-2xl font-extrabold text-[#39ff14] mt-0.5">Reddit Lurker</div>
-        </div>
+      <button id="muteBtn" class="p-2 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 transition active:scale-95 cursor-pointer" aria-label="Toggle Sound" title="Toggle Sound">
+        <span id="muteIcon" class="text-base leading-none">🔊</span>
+      </button>
+    </div>
+  </header>
 
-        <!-- Stats Grid -->
-        <div class="grid grid-cols-2 gap-3 mt-4">
-          <div class="bg-slate-800/60 border border-slate-700/70 rounded-xl p-3">
-            <div class="text-[10px] uppercase text-slate-400 font-bold">Eindscore</div>
-            <div id="finalScore" class="font-mono-tech text-2xl font-extrabold text-white">0</div>
-          </div>
-          <div class="bg-slate-800/60 border border-slate-700/70 rounded-xl p-3">
-            <div class="text-[10px] uppercase text-slate-400 font-bold">High Score</div>
-            <div id="finalHighScore" class="font-mono-tech text-2xl font-extrabold text-amber-400">0</div>
-          </div>
-          <div class="bg-slate-800/60 border border-slate-700/70 rounded-xl p-3">
-            <div class="text-[10px] uppercase text-slate-400 font-bold">Scams Geblokt</div>
-            <div id="finalBlocked" class="font-mono-tech text-xl font-bold text-rose-400">0</div>
-          </div>
-          <div class="bg-slate-800/60 border border-slate-700/70 rounded-xl p-3">
-            <div class="text-[10px] uppercase text-slate-400 font-bold">Max Combo</div>
-            <div id="finalMaxCombo" class="font-mono-tech text-xl font-bold text-cyan-400">x1</div>
-          </div>
-        </div>
-
-        <button id="restartBtn" class="btn-neon-green mt-6 w-full py-3.5 rounded-xl font-extrabold text-lg tracking-wide uppercase cursor-pointer">
-          OPNIEUW SPELEN
-        </button>
+  <!-- MAIN PLAYFIELD ARENA -->
+  <main id="arena" class="relative flex-1 w-full overflow-hidden">
+    <!-- Decorative Fake Desktop Icons -->
+    <div class="pointer-events-none absolute top-4 left-4 hidden sm:flex flex-col gap-4 opacity-30 z-0">
+      <div class="flex flex-col items-center w-16 text-center">
+        <div class="w-10 h-10 rounded-lg bg-slate-800 border border-slate-600 flex items-center justify-center text-lg">🗑️</div>
+        <span class="text-[10px] font-mono-tech mt-1 text-slate-300">Recycle Bin</span>
+      </div>
+      <div class="flex flex-col items-center w-16 text-center">
+        <div class="w-10 h-10 rounded-lg bg-slate-800 border border-slate-600 flex items-center justify-center text-lg">📁</div>
+        <span class="text-[10px] font-mono-tech mt-1 text-slate-300">GTA6_Leaks</span>
+      </div>
+      <div class="flex flex-col items-center w-16 text-center">
+        <div class="w-10 h-10 rounded-lg bg-slate-800 border border-slate-600 flex items-center justify-center text-lg">🛡️</div>
+        <span class="text-[10px] font-mono-tech mt-1 text-slate-300">Defender</span>
       </div>
     </div>
 
+    <!-- Particle Canvas -->
+    <canvas id="particleCanvas" class="pointer-events-none absolute inset-0 w-full h-full z-30"></canvas>
+
+    <!-- Active Pop-ups Layer -->
+    <div id="popupLayer" class="absolute inset-0 z-20"></div>
+  </main>
+
+  <!-- BOTTOM STATUS TICKER -->
+  <footer class="relative z-30 w-full bg-slate-950/95 border-t border-slate-800/90 px-3 sm:px-5 py-1.5 flex items-center justify-between text-[11px] font-mono-tech text-slate-400">
+    <div class="flex items-center gap-2 min-w-0">
+      <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 shrink-0 animate-pulse"></span>
+      <span id="statusTicker" class="truncate">Scanner ready. Protect your PC from fake GTA VI ports.</span>
+    </div>
+    <div class="hidden sm:flex items-center gap-4 shrink-0 ml-4">
+      <span>SCAMS BLOCKED: <strong id="blockedFooter" class="text-white">0</strong></span>
+      <span class="text-[#39ff14] font-bold">BULLSHIT OFF MODE</span>
+    </div>
+  </footer>
+
+  <!-- START SCREEN OVERLAY -->
+  <div id="startScreen" class="fixed inset-0 z-40 bg-slate-950/88 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="w-full max-w-lg bg-slate-900/95 border border-slate-700/80 rounded-2xl p-6 sm:p-8 shadow-2xl text-center relative overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#ff2a55] via-amber-400 to-[#39ff14]"></div>
+
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/15 border border-rose-500/40 text-rose-400 font-mono-tech text-xs font-bold mb-3">
+        <span>⚠️</span> r/PIRACY SURVIVAL BENCHMARK
+      </div>
+
+      <h1 class="text-3xl sm:text-5xl font-black tracking-tight text-white leading-tight">
+        BULLSHIT <span class="text-[#39ff14] drop-shadow-[0_0_12px_rgba(57,255,20,0.65)]">BLOCKER</span>
+      </h1>
+      <div class="font-mono-tech text-xs sm:text-sm text-cyan-400 font-bold tracking-widest mt-1">
+        GTA VI PC PORT EDITION
+      </div>
+
+      <!-- Brief 3-Bullet How-to-Play -->
+      <ul class="mt-5 text-left space-y-2.5 bg-slate-950/70 border border-slate-800 rounded-xl p-4 text-xs sm:text-sm text-slate-200">
+        <li class="flex items-start gap-2.5">
+          <span class="text-rose-400 font-bold shrink-0">❌ RED SCAMS:</span>
+          <span>Click to block fake <code class="text-rose-300 font-mono-tech">500KB.exe</code> pop-ups before their bar runs out.</span>
+        </li>
+        <li class="flex items-start gap-2.5">
+          <span class="text-[#39ff14] font-bold shrink-0">✅ GREEN LEGIT:</span>
+          <span><strong>DO NOT CLICK!</strong> Let open-source &amp; Megathread cards finish loading for +150 bonus pts.</span>
+        </li>
+        <li class="flex items-start gap-2.5">
+          <span class="text-cyan-300 font-bold shrink-0">🛡️ ADBLOCK PRO:</span>
+          <span>Click rare blue/gold power-ups to nuke every scam on screen at once!</span>
+        </li>
+      </ul>
+
+      <div class="mt-6 flex flex-col items-center gap-3">
+        <button id="startBtn" class="btn-neon-green w-full sm:w-auto px-10 py-3.5 rounded-xl font-extrabold text-lg tracking-wide uppercase cursor-pointer">
+          START SCANNER
+        </button>
+        <div class="font-mono-tech text-xs text-slate-400">
+          HIGH SCORE: <span id="startHighScore" class="text-amber-400 font-bold">0</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GAME OVER SCREEN OVERLAY -->
+  <div id="gameOverScreen" class="fixed inset-0 z-40 bg-slate-950/90 backdrop-blur-md hidden items-center justify-center p-4">
+    <div class="w-full max-w-md bg-slate-900/95 border-2 border-rose-500/75 rounded-2xl p-6 sm:p-8 shadow-[0_0_50px_rgba(255,42,85,0.28)] text-center relative overflow-hidden">
+      <div class="inline-block px-3 py-1 rounded-full bg-rose-500/20 border border-rose-500/50 text-rose-400 font-mono-tech text-xs font-bold mb-2">
+        WINDOWS DEFENDER FAILED
+      </div>
+
+      <h2 class="text-3xl sm:text-4xl font-black text-white tracking-tight">
+        YOUR PC IS COOKED!
+      </h2>
+      <p id="deathReason" class="text-xs sm:text-sm text-rose-300 font-mono-tech mt-1.5">
+        GTA6_PC_PORT_500KB.exe is now mining crypto in the background...
+      </p>
+
+      <!-- New High Score Badge (Hidden unless achieved) -->
+      <div id="newHighScoreBadge" class="hidden mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400/20 border border-amber-400 text-amber-300 font-mono-tech text-xs font-extrabold animate-bounce">
+        🏆 NEW HIGH SCORE!
+      </div>
+
+      <!-- Rank Badge -->
+      <div class="mt-4 bg-slate-950/80 border border-slate-700 rounded-xl p-3">
+        <div class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">r/Piracy Rank</div>
+        <div id="rankTitle" class="text-xl sm:text-2xl font-extrabold text-[#39ff14] mt-0.5">Megathread Reader</div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="grid grid-cols-2 gap-3 mt-4">
+        <div class="bg-slate-800/60 border border-slate-700/70 rounded-xl p-3">
+          <div class="text-[10px] uppercase text-slate-400 font-bold">Final Score</div>
+          <div id="finalScore" class="font-mono-tech text-2xl font-extrabold text-white">0</div>
+        </div>
+        <div class="bg-slate-800/60 border border-slate-700/70 rounded-xl p-3">
+          <div class="text-[10px] uppercase text-slate-400 font-bold">High Score</div>
+          <div id="finalHighScore" class="font-mono-tech text-2xl font-extrabold text-amber-400">0</div>
+        </div>
+        <div class="bg-slate-800/60 border border-slate-700/70 rounded-xl p-3">
+          <div class="text-[10px] uppercase text-slate-400 font-bold">Scams Blocked</div>
+          <div id="finalBlocked" class="font-mono-tech text-xl font-bold text-rose-400">0</div>
+        </div>
+        <div class="bg-slate-800/60 border border-slate-700/70 rounded-xl p-3">
+          <div class="text-[10px] uppercase text-slate-400 font-bold">Max Combo</div>
+          <div id="finalMaxCombo" class="font-mono-tech text-xl font-bold text-cyan-400">x1</div>
+        </div>
+      </div>
+
+      <button id="restartBtn" class="btn-neon-green mt-6 w-full py-3.5 rounded-xl font-extrabold text-lg tracking-wide uppercase cursor-pointer">
+        PLAY AGAIN
+      </button>
+    </div>
   </div>
 
   <script>
-    /**
-     * =========================================================================
-     * BULLSHIT BLOCKER: GTA VI Edition
-     * Single-file Arcade Minigame with Web Audio Synth & Canvas Particles
-     * =========================================================================
-     */
+    (() => {
+      // --- DOM REFERENCES ---
+      const arena = document.getElementById('arena');
+      const popupLayer = document.getElementById('popupLayer');
+      const canvas = document.getElementById('particleCanvas');
+      const ctx = canvas.getContext('2d');
 
-    // --- DOM ELEMENTS ---
-    const gameContainer = document.getElementById('gameContainer');
-    const playfield = document.getElementById('playfield');
-    const popupLayer = document.getElementById('popupLayer');
-    const particleCanvas = document.getElementById('particleCanvas');
-    const ctx = particleCanvas.getContext('2d');
+      const scoreDisplay = document.getElementById('scoreDisplay');
+      const comboDisplay = document.getElementById('comboDisplay');
+      const comboBox = document.getElementById('comboBox');
+      const highScoreHud = document.getElementById('highScoreHud');
+      const startHighScore = document.getElementById('startHighScore');
+      const hypeBadge = document.getElementById('hypeBadge');
+      const healthDisplay = document.getElementById('healthDisplay');
+      const statusTicker = document.getElementById('statusTicker');
+      const blockedFooter = document.getElementById('blockedFooter');
 
-    const scoreDisplay = document.getElementById('scoreDisplay');
-    const comboDisplay = document.getElementById('comboDisplay');
-    const comboBox = document.getElementById('comboBox');
-    const highScoreHud = document.getElementById('highScoreHud');
-    const startHighScore = document.getElementById('startHighScore');
-    const healthDisplay = document.getElementById('healthDisplay');
-    const hypeBadge = document.getElementById('hypeBadge');
-    const statusTicker = document.getElementById('statusTicker');
-    const blockedFooter = document.getElementById('blockedFooter');
+      const muteBtn = document.getElementById('muteBtn');
+      const muteIcon = document.getElementById('muteIcon');
+      const damageFlash = document.getElementById('damageFlash');
+      const nukeFlash = document.getElementById('nukeFlash');
 
-    const damageFlash = document.getElementById('damageFlash');
-    const nukeFlash = document.getElementById('nukeFlash');
+      const startScreen = document.getElementById('startScreen');
+      const gameOverScreen = document.getElementById('gameOverScreen');
+      const startBtn = document.getElementById('startBtn');
+      const restartBtn = document.getElementById('restartBtn');
 
-    const startScreen = document.getElementById('startScreen');
-    const gameOverScreen = document.getElementById('gameOverScreen');
-    const startBtn = document.getElementById('startBtn');
-    const restartBtn = document.getElementById('restartBtn');
-    const muteBtn = document.getElementById('muteBtn');
-    const soundOnIcon = document.getElementById('soundOnIcon');
-    const soundOffIcon = document.getElementById('soundOffIcon');
+      const deathReasonEl = document.getElementById('deathReason');
+      const newHighScoreBadge = document.getElementById('newHighScoreBadge');
+      const rankTitleEl = document.getElementById('rankTitle');
+      const finalScoreEl = document.getElementById('finalScore');
+      const finalHighScoreEl = document.getElementById('finalHighScore');
+      const finalBlockedEl = document.getElementById('finalBlocked');
+      const finalMaxComboEl = document.getElementById('finalMaxCombo');
 
-    const deathReasonEl = document.getElementById('deathReason');
-    const rankTitleEl = document.getElementById('rankTitle');
-    const finalScoreEl = document.getElementById('finalScore');
-    const finalHighScoreEl = document.getElementById('finalHighScore');
-    const finalBlockedEl = document.getElementById('finalBlocked');
-    const finalMaxComboEl = document.getElementById('finalMaxCombo');
+      // --- POPUP CONTENT TEMPLATES ---
+      const SCAM_TEMPLATES = [
+        { title: "GTA6_PC_PORT_500KB.exe", body: "100% WORKING! Super Compressed!", btn: "DOWNLOAD NOW", icon: "💀" },
+        { title: "DISABLE WINDOWS DEFENDER", body: "Required to run crack bro, trust me", btn: "TURN OFF", icon: "⚠️" },
+        { title: "FREE RTX 5090 DOWNLOAD", body: "Instant 4K 120FPS boost! Click NOW!", btn: "CLAIM GPU", icon: "🔥" },
+        { title: "GTA VI CRACKED BY EMPRESS", body: "(NO VIRUS) No password needed!", btn: "INSTALL.EXE", icon: "🏴‍☠️" },
+        { title: "INSTALL THIS PLAYER", body: "Required to watch 4K Benchmark", btn: "OPEN FILE", icon: "🎬" },
+        { title: "RAM_DOWNLOADER_64GB.bat", body: "Needed for GTA VI Ultra Settings", btn: "BOOST PC", icon: "⚡" },
+        { title: "YOUR PC IS INFECTED!", body: "Click here to clean 99 viruses!", btn: "FIX NOW", icon: "🦠" },
+        { title: "HUMAN VERIFICATION", body: "Complete 3 surveys to unlock 60FPS", btn: "VERIFY NOW", icon: "🤖" }
+      ];
 
-    // --- POPUP CONTENT TEMPLATES ---
-    const SCAM_TEMPLATES = [
-      { title: "GTA6_PC_PORT_500KB.exe", body: "100% Working! Super Compressed!", btn: "DOWNLOAD NOW", icon: "💀" },
-      { title: "DISABLE WINDOWS DEFENDER", body: "Required for crack to run bro", btn: "TURN OFF", icon: "⚠️" },
-      { title: "HUMAN VERIFICATION", body: "Vul 3 enquêtes in voor 60FPS", btn: "VERIFY NOW", icon: "🤖" },
-      { title: "FREE RTX 5090 DOWNLOAD", body: "Direct meer FPS! Klik NU!", btn: "CLAIM GPU", icon: "🔥" },
-      { title: "REAL 4K GAMEPLAY.mp4.exe", body: "Not a virus bro trust me", btn: "OPEN FILE", icon: "🎬" },
-      { title: "HOT SINGLES IN VICE CITY", body: "Slechts 500m bij jou vandaan!", btn: "CHAT NU", icon: "🌴" },
-      { title: "CRACKED BY CPY/EMPRESS", body: "Geen wachtwoord! (Echt waar)", btn: "INSTALL.EXE", icon: "🏴‍☠️" },
-      { title: "DOWNLOAD MORE RAM (64GB)", body: "Nodig voor GTA VI Ultra mode", btn: "BOOST PC", icon: "⚡" },
-      { title: "3RD PARTY LAUNCHER", body: "Installeer 4 toolbars om te spelen", btn: "ACCEPT ALL", icon: "🦠" }
-    ];
+      const LEGIT_TEMPLATES = [
+        { title: "GitHub Shader Fix (Open Source)", body: "Legit code — Do NOT click!", icon: "💻" },
+        { title: "PortWatch Verified Commit", body: "Verified update — Let it load!", icon: "✅" },
+        { title: "r/Piracy Megathread Update", body: "Safe resource — Hands off!", icon: "🛡️" },
+        { title: "Official Rockstar Announcement", body: "100% Real — Do not block!", icon: "🎮" },
+        { title: "Clean Open-Source Emulator PR", body: "Legit dev work — Let it finish!", icon: "🟢" }
+      ];
 
-    const LEGIT_TEMPLATES = [
-      { title: "GitHub: Shader Fix v0.4", body: "Legit code — Niet sluiten!", icon: "💻" },
-      { title: "PortWatch: Verified Commit", body: "Veilige update — Laat staan!", icon: "✅" },
-      { title: "Windows Defender Update", body: "PC Bescherming — Laat staan!", icon: "🛡️" },
-      { title: "NVIDIA Game Ready Driver", body: "Officieel — Niet wegklikken!", icon: "🟢" },
-      { title: "Steam: Official Wishlist", body: "100% Veilig — Laat laden!", icon: "🎮" }
-    ];
+      const STATUS_MESSAGES = [
+        "Scanner active: 42 fake YouTube benchmark links detected...",
+        "Reminder: A 500KB GTA VI installer is never real.",
+        "Pro tip: Leave green GitHub & Megathread cards untouched!",
+        "Windows Defender is fighting for its life...",
+        "PortWatch status: Still no official PC build in sight."
+      ];
 
-    const STATUS_MESSAGES = [
-      "Scanner actief: 42 neppe YouTube-links gedetecteerd...",
-      "Waarschuwing: '500KB super compressed' is nooit echt.",
-      "Tip: Laat groene GitHub & Defender vensters met rust!",
-      "PortWatch status: Nog steeds geen officiële PC-build.",
-      "Antivirus draait op volle toeren..."
-    ];
-
-    // --- WEB AUDIO SYNTHESIZER ---
-    class SoundEngine {
-      constructor() {
-        this.ctx = null;
-        this.muted = false;
-      }
-
-      init() {
-        if (!this.ctx) {
-          const AudioCtx = window.AudioContext || window.webkitAudioContext;
-          if (AudioCtx) {
-            this.ctx = new AudioCtx();
+      // --- WEB AUDIO API SYNTHESIZER ---
+      class RetroSFX {
+        constructor() {
+          this.ctx = null;
+          this.muted = false;
+        }
+        init() {
+          if (!this.ctx) {
+            const AudioCtx = window.AudioContext || window.webkitAudioContext;
+            if (AudioCtx) this.ctx = new AudioCtx();
+          }
+          if (this.ctx && this.ctx.state === 'suspended') {
+            this.ctx.resume();
           }
         }
-        if (this.ctx && this.ctx.state === 'suspended') {
-          this.ctx.resume();
+        tone(freq, endFreq, duration, type = 'square', vol = 0.12, delay = 0) {
+          if (this.muted || !this.ctx) return;
+          const now = this.ctx.currentTime + delay;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, now);
+          if (endFreq !== freq) {
+            osc.frequency.exponentialRampToValueAtTime(Math.max(20, endFreq), now + duration);
+          }
+          gain.gain.setValueAtTime(vol, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now);
+          osc.stop(now + duration);
+        }
+        playZap(combo = 1) {
+          const base = 360 + Math.min(combo, 12) * 35;
+          this.tone(base, base * 1.9, 0.11, 'square', 0.1);
+        }
+        playBuzz() {
+          this.tone(150, 55, 0.28, 'sawtooth', 0.16);
+          this.tone(110, 45, 0.25, 'square', 0.1, 0.05);
+        }
+        playChime() {
+          this.tone(587.33, 587.33, 0.12, 'sine', 0.12, 0);
+          this.tone(880, 880, 0.18, 'sine', 0.12, 0.09);
+        }
+        playPowerup() {
+          this.tone(330, 660, 0.12, 'triangle', 0.15, 0);
+          this.tone(660, 990, 0.14, 'triangle', 0.15, 0.08);
+          this.tone(990, 1480, 0.22, 'sine', 0.14, 0.16);
+        }
+      }
+      const sfx = new RetroSFX();
+
+      // --- GAME STATE ---
+      const STORAGE_KEY = 'bullshit_blocker_gtavi_highscore';
+      const state = {
+        running: false,
+        score: 0,
+        highScore: parseInt(localStorage.getItem(STORAGE_KEY) || '0', 10) || 0,
+        newHighScoreAchieved: false,
+        combo: 1,
+        maxCombo: 1,
+        health: 5,
+        maxHealth: 5,
+        hypeLevel: 1,
+        scamsBlocked: 0,
+        popups: [],
+        particles: [],
+        nextSpawnTimer: 0,
+        tickerTimer: 0,
+        tickerIndex: 0,
+        lastTime: 0,
+        lastDamageReason: ''
+      };
+
+      // --- CANVAS RESIZE ---
+      function resizeCanvas() {
+        const rect = arena.getBoundingClientRect();
+        canvas.width = rect.width;
+        canvas.height = rect.height;
+      }
+      window.addEventListener('resize', resizeCanvas);
+      resizeCanvas();
+
+      // --- PARTICLES ---
+      function spawnParticles(x, y, color, count = 16) {
+        for (let i = 0; i < count; i++) {
+          const angle = Math.random() * Math.PI * 2;
+          const speed = 70 + Math.random() * 190;
+          state.particles.push({
+            x,
+            y,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            size: 2.5 + Math.random() * 3.5,
+            color,
+            life: 0.45 + Math.random() * 0.3,
+            maxLife: 0.75
+          });
         }
       }
 
-      toggleMute() {
-        this.muted = !this.muted;
-        soundOnIcon.classList.toggle('hidden', this.muted);
-        soundOffIcon.classList.toggle('hidden', !this.muted);
+      function updateAndDrawParticles(dt) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let i = state.particles.length - 1; i >= 0; i--) {
+          const p = state.particles[i];
+          p.life -= dt;
+          if (p.life <= 0) {
+            state.particles.splice(i, 1);
+            continue;
+          }
+          p.x += p.vx * dt;
+          p.y += p.vy * dt;
+          p.vy += 260 * dt; // subtle gravity
+          ctx.globalAlpha = Math.max(0, p.life / p.maxLife);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(p.x, p.y, p.size, p.size);
+        }
+        ctx.globalAlpha = 1;
       }
 
-      playSmash(combo = 1) {
-        if (this.muted || !this.ctx) return;
-        try {
-          const now = this.ctx.currentTime;
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-          const baseFreq = Math.min(260 + combo * 35, 780);
-
-          osc.type = 'triangle';
-          osc.frequency.setValueAtTime(baseFreq, now);
-          osc.frequency.exponentialRampToValueAtTime(baseFreq * 1.8, now + 0.06);
-          osc.frequency.exponentialRampToValueAtTime(90, now + 0.14);
-
-          gain.gain.setValueAtTime(0.22, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
-
-          osc.connect(gain);
-          gain.connect(this.ctx.destination);
-          osc.start(now);
-          osc.stop(now + 0.15);
-        } catch (e) {}
+      // --- FLOATING TEXT ---
+      function spawnFloatingText(x, y, text, colorClass) {
+        const el = document.createElement('div');
+        el.className = `floating-text ${colorClass}`;
+        el.style.left = `${x}px`;
+        el.style.top = `${y}px`;
+        el.textContent = text;
+        arena.appendChild(el);
+        setTimeout(() => el.remove(), 850);
       }
 
-      playSafeComplete() {
-        if (this.muted || !this.ctx) return;
-        try {
-          const now = this.ctx.currentTime;
-          [523.25, 659.25, 783.99].forEach((freq, i) => {
-            const osc = this.ctx.createOscillator();
-            const gain = this.ctx.createGain();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(freq, now + i * 0.045);
-            gain.gain.setValueAtTime(0.11, now + i * 0.045);
-            gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.045 + 0.18);
-            osc.connect(gain);
-            gain.connect(this.ctx.destination);
-            osc.start(now + i * 0.045);
-            osc.stop(now + i * 0.045 + 0.2);
-          });
-        } catch (e) {}
+      // --- HUD UPDATES ---
+      function updateHUD() {
+        scoreDisplay.textContent = state.score.toLocaleString('en-US');
+        comboDisplay.textContent = `x${state.combo}`;
+        highScoreHud.textContent = state.highScore.toLocaleString('en-US');
+        startHighScore.textContent = state.highScore.toLocaleString('en-US');
+        hypeBadge.textContent = `HYPE LVL ${state.hypeLevel}`;
+        blockedFooter.textContent = state.scamsBlocked;
+
+        // Render 5 Windows Defender Integrity Shields
+        healthDisplay.innerHTML = '';
+        for (let i = 0; i < state.maxHealth; i++) {
+          const active = i < state.health;
+          const span = document.createElement('span');
+          span.className = `text-sm sm:text-lg transition-all duration-200 ${
+            active
+              ? 'scale-100 opacity-100 drop-shadow-[0_0_6px_rgba(0,240,255,0.9)]'
+              : 'scale-75 opacity-20 grayscale'
+          }`;
+          span.textContent = '🛡️';
+          healthDisplay.appendChild(span);
+        }
       }
 
-      playError() {
-        if (this.muted || !this.ctx) return;
-        try {
-          const now = this.ctx.currentTime;
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-          osc.type = 'sawtooth';
-          osc.frequency.setValueAtTime(165, now);
-          osc.frequency.linearRampToValueAtTime(75, now + 0.28);
-
-          gain.gain.setValueAtTime(0.24, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
-
-          osc.connect(gain);
-          gain.connect(this.ctx.destination);
-          osc.start(now);
-          osc.stop(now + 0.31);
-        } catch (e) {}
+      function pulseComboUI() {
+        comboBox.classList.add('scale-110', 'border-cyan-400');
+        setTimeout(() => comboBox.classList.remove('scale-110', 'border-cyan-400'), 110);
       }
 
-      playNuke() {
-        if (this.muted || !this.ctx) return;
-        try {
-          const now = this.ctx.currentTime;
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(920, now);
-          osc.frequency.exponentialRampToValueAtTime(120, now + 0.45);
-
-          gain.gain.setValueAtTime(0.28, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.48);
-
-          osc.connect(gain);
-          gain.connect(this.ctx.destination);
-          osc.start(now);
-          osc.stop(now + 0.5);
-        } catch (e) {}
+      function triggerFlash(el) {
+        el.style.opacity = '1';
+        setTimeout(() => { el.style.opacity = '0'; }, 140);
       }
-    }
 
-    const sfx = new SoundEngine();
+      function triggerShake() {
+        document.body.classList.remove('shake');
+        void document.body.offsetWidth; // reflow
+        document.body.classList.add('shake');
+      }
 
-    // --- PARTICLE SYSTEM ---
-    let particles = [];
+      // --- DIFFICULTY & HIGH SCORE ---
+      function checkProgress() {
+        const newHype = 1 + Math.floor(state.score / 1200);
+        if (newHype > state.hypeLevel) {
+          state.hypeLevel = newHype;
+          statusTicker.textContent = `🔥 HYPE LEVEL ${state.hypeLevel}! Fake GTA VI ports are flooding in faster!`;
+        }
+        if (state.score > state.highScore) {
+          state.highScore = state.score;
+          state.newHighScoreAchieved = true;
+          localStorage.setItem(STORAGE_KEY, String(state.highScore));
+        }
+      }
 
-    function resizeCanvas() {
-      const rect = playfield.getBoundingClientRect();
-      particleCanvas.width = rect.width;
-      particleCanvas.height = rect.height;
-    }
+      // --- DAMAGE HANDLING ---
+      function applyDamage(reason) {
+        state.health = Math.max(0, state.health - 1);
+        state.combo = 1;
+        state.lastDamageReason = reason;
+        triggerShake();
+        triggerFlash(damageFlash);
+        statusTicker.textContent = `🚨 ${reason}`;
+        updateHUD();
 
-    function spawnParticles(x, y, color, count = 18) {
-      for (let i = 0; i < count; i++) {
-        const angle = Math.random() * Math.PI * 2;
-        const speed = 2.2 + Math.random() * 6.5;
-        particles.push({
+        if (state.health <= 0) {
+          endGame();
+        }
+      }
+
+      // --- POPUP SPAWNING ---
+      function spawnPopup() {
+        const rect = arena.getBoundingClientRect();
+        const isMobile = rect.width < 640;
+
+        // Roll popup type: 70% scam, 22% legit, 8% powerup (if none active)
+        const hasPowerup = state.popups.some(p => p.type === 'powerup');
+        const roll = Math.random();
+        let type = 'scam';
+        if (!hasPowerup && roll < 0.08 && state.scamsBlocked >= 3) {
+          type = 'powerup';
+        } else if (roll < 0.30) {
+          type = 'legit';
+        }
+
+        const winW = type === 'powerup' ? 175 : (isMobile ? 205 : 240);
+        const winH = type === 'powerup' ? 95 : 122;
+        const pad = 14;
+
+        const maxX = Math.max(pad, rect.width - winW - pad);
+        const maxY = Math.max(pad, rect.height - winH - pad);
+
+        // Try a few random spots to minimize overlap
+        let x = pad + Math.random() * (maxX - pad);
+        let y = pad + Math.random() * (maxY - pad);
+        for (let attempt = 0; attempt < 6; attempt++) {
+          const tx = pad + Math.random() * (maxX - pad);
+          const ty = pad + Math.random() * (maxY - pad);
+          const overlaps = state.popups.some(p =>
+            Math.abs(p.x - tx) < winW * 0.75 && Math.abs(p.y - ty) < winH * 0.75
+          );
+          if (!overlaps) {
+            x = tx;
+            y = ty;
+            break;
+          }
+        }
+
+        const el = document.createElement('div');
+        el.style.left = `${x}px`;
+        el.style.top = `${y}px`;
+
+        let duration = 3.6;
+        let titleText = '';
+
+        // Scale speed with Hype Level
+        const speedFactor = Math.max(0.48, 1 - (state.hypeLevel - 1) * 0.075);
+
+        if (type === 'scam') {
+          const tpl = SCAM_TEMPLATES[Math.floor(Math.random() * SCAM_TEMPLATES.length)];
+          titleText = tpl.title;
+          duration = (3.4 + Math.random() * 0.9) * speedFactor;
+
+          el.className = 'game-window window-scam';
+          el.innerHTML = `
+            <div class="bg-rose-600/90 px-2.5 py-1 flex items-center justify-between border-b border-rose-400/50">
+              <span class="font-mono-tech text-[10px] font-extrabold text-white truncate pr-2">${tpl.icon} ${tpl.title}</span>
+              <span class="bg-black/40 hover:bg-black/70 text-white text-[10px] font-bold px-1.5 py-0.5 rounded leading-none">✕</span>
+            </div>
+            <div class="p-2.5 sm:p-3">
+              <div class="text-xs font-bold text-rose-100 leading-snug">${tpl.body}</div>
+              <div class="mt-2 flex items-center justify-between">
+                <span class="px-2 py-0.5 rounded bg-rose-500 text-white font-mono-tech text-[10px] font-extrabold tracking-wide">${tpl.btn}</span>
+                <span class="font-mono-tech text-[10px] text-rose-300 font-bold">CLICK TO BLOCK</span>
+              </div>
+            </div>
+            <div class="w-full h-1.5 bg-black/60">
+              <div class="progress-bar h-full bg-[#ff2a55] shadow-[0_0_8px_#ff2a55]" style="width: 100%"></div>
+            </div>
+          `;
+        } else if (type === 'legit') {
+          const tpl = LEGIT_TEMPLATES[Math.floor(Math.random() * LEGIT_TEMPLATES.length)];
+          titleText = tpl.title;
+          duration = (2.6 + Math.random() * 0.6) * Math.max(0.65, speedFactor);
+
+          el.className = 'game-window window-legit';
+          el.innerHTML = `
+            <div class="bg-emerald-700/90 px-2.5 py-1 flex items-center justify-between border-b border-emerald-400/50">
+              <span class="font-mono-tech text-[10px] font-extrabold text-white truncate pr-2">${tpl.icon} ${tpl.title}</span>
+              <span class="text-[10px] font-mono-tech text-emerald-200 font-bold">SAFE</span>
+            </div>
+            <div class="p-2.5 sm:p-3">
+              <div class="text-xs font-bold text-emerald-100 leading-snug">${tpl.body}</div>
+              <div class="mt-2 flex items-center justify-between">
+                <span class="font-mono-tech text-[10px] font-extrabold text-[#39ff14]">DO NOT CLICK</span>
+                <span class="font-mono-tech text-[10px] text-emerald-300/90">+150 PTS</span>
+              </div>
+            </div>
+            <div class="w-full h-1.5 bg-black/60">
+              <div class="progress-bar h-full bg-[#39ff14] shadow-[0_0_8px_#39ff14]" style="width: 0%"></div>
+            </div>
+          `;
+        } else {
+          titleText = 'ADBLOCK PRO';
+          duration = 3.2;
+
+          el.className = 'game-window window-powerup';
+          el.innerHTML = `
+            <div class="p-3 text-center">
+              <div class="text-2xl leading-none">🛡️</div>
+              <div class="font-mono-tech text-xs sm:text-sm font-extrabold text-cyan-300 mt-1 tracking-wide">ADBLOCK PRO</div>
+              <div class="text-[10px] text-amber-300 font-bold uppercase tracking-wider">CLICK TO NUKE SCAMS!</div>
+            </div>
+            <div class="w-full h-1.5 bg-black/60">
+              <div class="progress-bar h-full bg-cyan-400 shadow-[0_0_8px_#00f0ff]" style="width: 100%"></div>
+            </div>
+          `;
+        }
+
+        const popupObj = {
+          el,
+          bar: el.querySelector('.progress-bar'),
+          type,
+          title: titleText,
           x,
           y,
-          vx: Math.cos(angle) * speed,
-          vy: Math.sin(angle) * speed - 1.2,
-          size: 2.5 + Math.random() * 4.5,
-          color,
-          alpha: 1,
-          decay: 0.022 + Math.random() * 0.025
+          w: winW,
+          h: winH,
+          elapsed: 0,
+          duration
+        };
+
+        el.addEventListener('pointerdown', (e) => {
+          e.stopPropagation();
+          handlePopupClick(popupObj);
         });
+
+        popupLayer.appendChild(el);
+        state.popups.push(popupObj);
       }
-    }
 
-    function updateParticles() {
-      ctx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
-      for (let i = particles.length - 1; i >= 0; i--) {
-        const p = particles[i];
-        p.x += p.vx;
-        p.y += p.vy;
-        p.vy += 0.18; // light gravity
-        p.alpha -= p.decay;
-        if (p.alpha <= 0) {
-          particles.splice(i, 1);
-          continue;
-        }
-        ctx.save();
-        ctx.globalAlpha = p.alpha;
-        ctx.fillStyle = p.color;
-        ctx.shadowBlur = 8;
-        ctx.shadowColor = p.color;
-        ctx.fillRect(p.x - p.size / 2, p.y - p.size / 2, p.size, p.size);
-        ctx.restore();
-      }
-    }
-
-    // --- GAME STATE ---
-    const STORAGE_KEY = 'bullshit_blocker_gtavi_highscore';
-    let state = {
-      running: false,
-      score: 0,
-      highScore: parseInt(localStorage.getItem(STORAGE_KEY) || '0', 10),
-      health: 3,
-      maxHealth: 3,
-      combo: 1,
-      comboStreak: 0,
-      maxCombo: 1,
-      scamsBlocked: 0,
-      hypeLevel: 1,
-      elapsedTime: 0,
-      spawnTimer: 0,
-      nextId: 1,
-      popups: [], // { id, type, el, barEl, duration, remaining, x, y, width, height, title }
-      lastFrameTime: 0,
-      lastDamageReason: ''
-    };
-
-    // --- HUD & VISUAL FEEDBACK ---
-    function updateHUD() {
-      scoreDisplay.textContent = state.score.toLocaleString('nl-NL');
-      comboDisplay.textContent = `x${state.combo}`;
-      highScoreHud.textContent = state.highScore.toLocaleString('nl-NL');
-      startHighScore.textContent = state.highScore.toLocaleString('nl-NL');
-      hypeBadge.textContent = `HYPE LVL ${state.hypeLevel}`;
-      blockedFooter.textContent = state.scamsBlocked;
-
-      // Render PC Health Hearts/Shields
-      healthDisplay.innerHTML = '';
-      for (let i = 0; i < state.maxHealth; i++) {
-        const active = i < state.health;
-        const span = document.createElement('span');
-        span.className = `text-base sm:text-lg transition-all duration-200 ${active ? 'scale-100 opacity-100 drop-shadow-[0_0_6px_rgba(255,42,85,0.8)]' : 'scale-75 opacity-20 grayscale'}`;
-        span.textContent = '❤️';
-        healthDisplay.appendChild(span);
-      }
-    }
-
-    function pulseComboUI() {
-      comboBox.style.transform = 'scale(1.18)';
-      setTimeout(() => {
-        comboBox.style.transform = 'scale(1)';
-      }, 110);
-    }
-
-    function triggerShakeAndFlash() {
-      gameContainer.classList.remove('shake-active');
-      void gameContainer.offsetWidth; // force reflow
-      gameContainer.classList.add('shake-active');
-
-      damageFlash.classList.add('active');
-      setTimeout(() => damageFlash.classList.remove('active'), 160);
-    }
-
-    function triggerNukeFlash() {
-      nukeFlash.classList.add('active');
-      setTimeout(() => nukeFlash.classList.remove('active'), 220);
-    }
-
-    function spawnFloatingText(x, y, text, colorClass = 'text-[#39ff14]') {
-      const el = document.createElement('div');
-      el.className = `floating-score font-mono-tech text-sm sm:text-base ${colorClass}`;
-      el.style.left = `${x}px`;
-      el.style.top = `${y}px`;
-      el.textContent = text;
-      playfield.appendChild(el);
-      setTimeout(() => el.remove(), 860);
-    }
-
-    // --- POPUP SPAWNING LOGIC ---
-    function getPopupDimensions(type) {
-      const isMobile = playfield.clientWidth < 520;
-      if (type === 'powerup') {
-        return { w: isMobile ? 168 : 196, h: isMobile ? 86 : 94 };
-      }
-      return {
-        w: isMobile ? Math.min(220, playfield.clientWidth - 24) : 258,
-        h: isMobile ? 114 : 124
-      };
-    }
-
-    function findSpawnPosition(w, h) {
-      const pad = 12;
-      const maxX = Math.max(pad, playfield.clientWidth - w - pad);
-      const maxY = Math.max(pad, playfield.clientHeight - h - pad);
-
-      let bestPos = { x: pad + Math.random() * (maxX - pad), y: pad + Math.random() * (maxY - pad) };
-      let lowestOverlap = Infinity;
-
-      // Try up to 10 random spots and pick the least overlapping one
-      for (let attempt = 0; attempt < 10; attempt++) {
-        const cx = pad + Math.random() * (maxX - pad);
-        const cy = pad + Math.random() * (maxY - pad);
-        let overlapScore = 0;
-
-        for (const p of state.popups) {
-          const dx = Math.max(0, Math.min(cx + w, p.x + p.width) - Math.max(cx, p.x));
-          const dy = Math.max(0, Math.min(cy + h, p.y + p.height) - Math.max(cy, p.y));
-          overlapScore += dx * dy;
-        }
-
-        if (overlapScore < lowestOverlap) {
-          lowestOverlap = overlapScore;
-          bestPos = { x: cx, y: cy };
-          if (overlapScore === 0) break;
+      function removePopup(popup) {
+        const idx = state.popups.indexOf(popup);
+        if (idx !== -1) state.popups.splice(idx, 1);
+        if (popup.el && popup.el.parentNode) {
+          popup.el.remove();
         }
       }
 
-      return bestPos;
-    }
+      // --- CLICK HANDLING ---
+      function handlePopupClick(popup) {
+        if (!state.running) return;
+        const cx = popup.x + popup.w / 2;
+        const cy = popup.y + popup.h / 2;
 
-    function spawnPopup() {
-      const maxConcurrent = Math.min(4 + state.hypeLevel, 10);
-      if (state.popups.length >= maxConcurrent) return;
-
-      // Determine type: ~7% Power-up (only if at least 2 scams or random rare), ~22% Legit, ~71% Scam
-      const activeScams = state.popups.filter(p => p.type === 'scam').length;
-      const activePowerups = state.popups.filter(p => p.type === 'powerup').length;
-      const roll = Math.random();
-
-      let type = 'scam';
-      if (activePowerups === 0 && activeScams >= 2 && roll < 0.085) {
-        type = 'powerup';
-      } else if (roll < 0.28) {
-        type = 'legit';
-      }
-
-      const { w, h } = getPopupDimensions(type);
-      const { x, y } = findSpawnPosition(w, h);
-      const id = state.nextId++;
-
-      const el = document.createElement('div');
-      el.style.left = `${x}px`;
-      el.style.top = `${y}px`;
-      el.style.width = `${w}px`;
-
-      let duration = 3.6;
-      let titleText = '';
-      let barEl = null;
-
-      if (type === 'scam') {
-        const tpl = SCAM_TEMPLATES[Math.floor(Math.random() * SCAM_TEMPLATES.length)];
-        titleText = tpl.title;
-        // Speed scales smoothly with hypeLevel
-        duration = Math.max(1.55, 3.65 - (state.hypeLevel - 1) * 0.24) * (0.9 + Math.random() * 0.22);
-
-        el.className = 'game-window window-scam';
-        el.innerHTML = `
-          <div class="flex items-center justify-between px-2.5 py-1.5 bg-gradient-to-r from-[#ff2a55] to-[#ff6b00] text-white">
-            <div class="flex items-center gap-1.5 truncate">
-              <span class="text-xs">${tpl.icon}</span>
-              <span class="font-mono-tech text-[11px] font-extrabold truncate tracking-tight">${tpl.title}</span>
-            </div>
-            <span class="ml-2 flex-shrink-0 w-5 h-5 rounded bg-black/35 flex items-center justify-center font-mono-tech text-xs font-extrabold">✕</span>
-          </div>
-          <div class="p-2.5 sm:p-3">
-            <div class="text-xs sm:text-sm font-bold text-rose-100 leading-snug">${tpl.body}</div>
-            <div class="mt-2 flex items-center justify-between">
-              <span class="px-2 py-0.5 rounded bg-rose-500/25 border border-rose-500/50 text-rose-300 font-mono-tech text-[10px] font-bold">BULLSHIT ON</span>
-              <span class="px-2 py-0.5 rounded bg-rose-600 text-white font-mono-tech text-[10px] font-extrabold animate-pulse">${tpl.btn}</span>
-            </div>
-          </div>
-          <div class="w-full h-1.5 bg-black/60">
-            <div class="progress-bar h-full bg-gradient-to-r from-amber-400 via-rose-500 to-red-600" style="width: 100%"></div>
-          </div>
-        `;
-      } else if (type === 'legit') {
-        const tpl = LEGIT_TEMPLATES[Math.floor(Math.random() * LEGIT_TEMPLATES.length)];
-        titleText = tpl.title;
-        duration = 2.45;
-
-        el.className = 'game-window window-legit';
-        el.innerHTML = `
-          <div class="flex items-center justify-between px-2.5 py-1.5 bg-emerald-950/90 border-b border-[#39ff14]/40 text-[#39ff14]">
-            <div class="flex items-center gap-1.5 truncate">
-              <span class="text-xs">${tpl.icon}</span>
-              <span class="font-mono-tech text-[11px] font-extrabold truncate">${tpl.title}</span>
-            </div>
-            <span class="ml-2 flex-shrink-0 px-1.5 py-0.5 rounded bg-[#39ff14]/20 text-[9px] font-mono-tech font-bold">SAFE</span>
-          </div>
-          <div class="p-2.5 sm:p-3">
-            <div class="text-xs sm:text-sm font-bold text-emerald-100 leading-snug">${tpl.body}</div>
-            <div class="mt-2 flex items-center justify-between">
-              <span class="font-mono-tech text-[10px] font-bold text-[#39ff14]">NIET AANRAKEN</span>
-              <span class="font-mono-tech text-[10px] text-emerald-300/80">+150 PTS</span>
-            </div>
-          </div>
-          <div class="w-full h-1.5 bg-black/60">
-            <div class="progress-bar h-full bg-[#39ff14] shadow-[0_0_8px_#39ff14]" style="width: 0%"></div>
-          </div>
-        `;
-      } else {
-        titleText = 'ADBLOCK PRO';
-        duration = 3.0;
-
-        el.className = 'game-window window-powerup';
-        el.innerHTML = `
-          <div class="p-3 text-center">
-            <div class="text-2xl leading-none">🛡️</div>
-            <div class="font-mono-tech text-xs sm:text-sm font-extrabold text-cyan-300 mt-1 tracking-wide">ADBLOCK PRO</div>
-            <div class="text-[10px] text-amber-300 font-bold uppercase tracking-wider">KLIK VOOR NUKE!</div>
-          </div>
-          <div class="w-full h-1.5 bg-black/60">
-            <div class="progress-bar h-full bg-gradient-to-r from-cyan-400 to-amber-300" style="width: 100%"></div>
-          </div>
-        `;
-      }
-
-      barEl = el.querySelector('.progress-bar');
-
-      const popupObj = {
-        id,
-        type,
-        el,
-        barEl,
-        duration,
-        remaining: duration,
-        x,
-        y,
-        width: w,
-        height: h,
-        title: titleText
-      };
-
-      // Use pointerdown for instant response on both mouse & mobile touch
-      el.addEventListener('pointerdown', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        handlePopupClick(popupObj);
-      });
-
-      popupLayer.appendChild(el);
-      state.popups.push(popupObj);
-    }
-
-    function removePopup(popupObj) {
-      const idx = state.popups.indexOf(popupObj);
-      if (idx !== -1) {
-        state.popups.splice(idx, 1);
-      }
-      if (popupObj.el && popupObj.el.parentNode) {
-        popupObj.el.remove();
-      }
-    }
-
-    // --- INTERACTION HANDLERS ---
-    function handlePopupClick(popup) {
-      if (!state.running) return;
-      const cx = popup.x + popup.width / 2;
-      const cy = popup.y + popup.height / 2;
-
-      if (popup.type === 'scam') {
-        // Smash scam!
-        state.scamsBlocked++;
-        state.comboStreak++;
-        state.combo = Math.min(8, 1 + Math.floor(state.comboStreak / 3));
-        if (state.combo > state.maxCombo) state.maxCombo = state.combo;
-
-        const pts = 100 * state.combo;
-        state.score += pts;
-
-        sfx.playSmash(state.combo);
-        spawnParticles(cx, cy, '#ff2a55', 16);
-        spawnParticles(cx, cy, '#ffaa00', 8);
-
-        const label = state.combo > 1 ? `+${pts} (x${state.combo}!)` : `+${pts}`;
-        spawnFloatingText(cx, cy, label, state.combo >= 3 ? 'text-amber-300' : 'text-white');
-
-        pulseComboUI();
-        removePopup(popup);
-        checkHypeAndHighScore();
-        updateHUD();
-      } else if (popup.type === 'legit') {
-        // Oops! Smashed a legit dev card
-        sfx.playError();
-        spawnParticles(cx, cy, '#ff2a55', 20);
-        spawnFloatingText(cx, cy, 'FOUT! DAT WAS LEGIT!', 'text-rose-400');
-        removePopup(popup);
-        applyDamage(`Je hebt "${popup.title}" per ongeluk gesloten!`);
-      } else if (popup.type === 'powerup') {
-        // ADBLOCK PRO NUKE! Clear all active red scams
-        sfx.playNuke();
-        triggerNukeFlash();
-        spawnParticles(cx, cy, '#00f0ff', 28);
-        spawnFloatingText(cx, cy, 'ADBLOCK NUKE!', 'text-cyan-300');
-        removePopup(popup);
-
-        const scamsToClear = state.popups.filter(p => p.type === 'scam');
-        let bonusTotal = 0;
-        scamsToClear.forEach((scam) => {
-          const sx = scam.x + scam.width / 2;
-          const sy = scam.y + scam.height / 2;
-          state.scamsBlocked++;
+        if (popup.type === 'scam') {
           const pts = 100 * state.combo;
-          bonusTotal += pts;
           state.score += pts;
-          spawnParticles(sx, sy, '#00f0ff', 14);
-          spawnParticles(sx, sy, '#ffd700', 10);
-          spawnFloatingText(sx, sy, `+${pts}`, 'text-cyan-300');
-          removePopup(scam);
-        });
+          state.scamsBlocked += 1;
+          state.combo = Math.min(20, state.combo + 1);
+          if (state.combo > state.maxCombo) state.maxCombo = state.combo;
 
-        if (bonusTotal === 0) {
-          state.score += 200;
-          spawnFloatingText(cx, cy - 22, '+200 SHIELD BONUS', 'text-amber-300');
+          sfx.playZap(state.combo);
+          spawnParticles(cx, cy, '#ff2a55', 16);
+          const label = state.combo > 2 ? `+${pts} (x${state.combo - 1})` : `+${pts}`;
+          spawnFloatingText(cx, cy, label, state.combo >= 4 ? 'text-amber-300' : 'text-white');
+
+          pulseComboUI();
+          removePopup(popup);
+          checkProgress();
+          updateHUD();
+        } else if (popup.type === 'legit') {
+          sfx.playBuzz();
+          spawnParticles(cx, cy, '#ff2a55', 22);
+          spawnFloatingText(cx, cy, 'BLOCKED LEGIT UPDATE!', 'text-rose-400');
+          removePopup(popup);
+          applyDamage(`You accidentally blocked "${popup.title}"!`);
+        } else if (popup.type === 'powerup') {
+          sfx.playPowerup();
+          triggerFlash(nukeFlash);
+          spawnParticles(cx, cy, '#00f0ff', 28);
+          removePopup(popup);
+
+          const scamsToClear = state.popups.filter(p => p.type === 'scam');
+          let bonus = 250;
+          scamsToClear.forEach(s => {
+            const sx = s.x + s.w / 2;
+            const sy = s.y + s.h / 2;
+            const pts = 100 * state.combo;
+            bonus += pts;
+            state.scamsBlocked += 1;
+            spawnParticles(sx, sy, '#ffd700', 14);
+            spawnFloatingText(sx, sy, `NUKED! +${pts}`, 'text-cyan-300');
+            removePopup(s);
+          });
+
+          state.score += bonus;
+          spawnFloatingText(cx, cy, `ADBLOCK NUKE! +${bonus}`, 'text-amber-300');
+          statusTicker.textContent = `🛡️ ADBLOCK PRO activated! ${scamsToClear.length} scams obliterated!`;
+          checkProgress();
+          updateHUD();
+        }
+      }
+
+      // --- MAIN GAME LOOP ---
+      function gameLoop(timestamp) {
+        if (!state.running) return;
+        const dt = Math.min(0.05, (timestamp - state.lastTime) / 1000);
+        state.lastTime = timestamp;
+
+        // Spawn timer
+        state.nextSpawnTimer -= dt;
+        if (state.nextSpawnTimer <= 0) {
+          const maxPopups = Math.min(9, 4 + Math.floor(state.hypeLevel * 0.8));
+          if (state.popups.length < maxPopups) {
+            spawnPopup();
+          }
+          const baseInterval = Math.max(0.42, 1.25 - (state.hypeLevel - 1) * 0.1);
+          state.nextSpawnTimer = baseInterval * (0.8 + Math.random() * 0.4);
         }
 
-        statusTicker.textContent = `🛡️ ADBLOCK PRO geactiveerd! ${scamsToClear.length} scams vernietigd!`;
-        checkHypeAndHighScore();
-        updateHUD();
-      }
-    }
-
-    function applyDamage(reason) {
-      state.health--;
-      state.combo = 1;
-      state.comboStreak = 0;
-      state.lastDamageReason = reason;
-
-      triggerShakeAndFlash();
-      statusTicker.textContent = `⚠️ ${reason}`;
-      updateHUD();
-
-      if (state.health <= 0) {
-        endGame();
-      }
-    }
-
-    function checkHypeAndHighScore() {
-      const newHype = 1 + Math.floor(state.score / 1200);
-      if (newHype > state.hypeLevel) {
-        state.hypeLevel = newHype;
-        statusTicker.textContent = `🔥 HYPE LEVEL ${state.hypeLevel}! De scam-popups komen sneller!`;
-      }
-      if (state.score > state.highScore) {
-        state.highScore = state.score;
-        try {
-          localStorage.setItem(STORAGE_KEY, String(state.highScore));
-        } catch (e) {}
-      }
-    }
-
-    // --- MAIN GAME LOOP ---
-    function gameLoop(timestamp) {
-      if (!state.lastFrameTime) state.lastFrameTime = timestamp;
-      const dt = Math.min((timestamp - state.lastFrameTime) / 1000, 0.1);
-      state.lastFrameTime = timestamp;
-
-      updateParticles();
-
-      if (state.running) {
-        state.elapsedTime += dt;
-
-        // Spawn pacing scales with hypeLevel
-        const spawnInterval = Math.max(0.42, 1.28 - (state.hypeLevel - 1) * 0.11);
-        state.spawnTimer += dt;
-        if (state.spawnTimer >= spawnInterval) {
-          state.spawnTimer = 0;
-          spawnPopup();
+        // Rotate status ticker
+        state.tickerTimer -= dt;
+        if (state.tickerTimer <= 0) {
+          state.tickerTimer = 5.5;
+          state.tickerIndex = (state.tickerIndex + 1) % STATUS_MESSAGES.length;
+          statusTicker.textContent = STATUS_MESSAGES[state.tickerIndex];
         }
 
-        // Update active popups
+        // Update popups
         for (let i = state.popups.length - 1; i >= 0; i--) {
           const p = state.popups[i];
-          p.remaining -= dt;
-          const ratio = Math.max(0, p.remaining / p.duration);
+          p.elapsed += dt;
+          const progress = Math.min(1, p.elapsed / p.duration);
 
           if (p.type === 'legit') {
-            // Legit bar fills up to 100%
-            p.barEl.style.width = `${(1 - ratio) * 100}%`;
+            p.bar.style.width = `${progress * 100}%`;
           } else {
-            // Scam & powerup bars shrink down to 0%
-            p.barEl.style.width = `${ratio * 100}%`;
+            p.bar.style.width = `${(1 - progress) * 100}%`;
           }
 
-          if (p.remaining <= 0) {
-            const cx = p.x + p.width / 2;
-            const cy = p.y + p.height / 2;
+          if (p.elapsed >= p.duration) {
+            const cx = p.x + p.w / 2;
+            const cy = p.y + p.h / 2;
 
             if (p.type === 'scam') {
-              // Scam finished loading -> PC infected!
-              sfx.playError();
-              spawnParticles(cx, cy, '#ff2a55', 22);
-              spawnFloatingText(cx, cy, '-1 HP (VIRUS!)', 'text-rose-500');
+              sfx.playBuzz();
+              spawnParticles(cx, cy, '#ff2a55', 20);
+              spawnFloatingText(cx, cy, '-1 SHIELD (INFECTED!)', 'text-rose-500');
               const title = p.title;
               removePopup(p);
-              applyDamage(`${title} is geïnstalleerd op je PC!`);
+              applyDamage(`${title} infected your PC!`);
               if (!state.running) break;
             } else if (p.type === 'legit') {
-              // Legit safely completed -> Bonus!
-              sfx.playSafeComplete();
+              sfx.playChime();
               state.score += 150;
               spawnParticles(cx, cy, '#39ff14', 14);
-              spawnFloatingText(cx, cy, 'SAFE +150!', 'text-[#39ff14]');
+              spawnFloatingText(cx, cy, '+150 LEGIT!', 'text-[#39ff14]');
               removePopup(p);
-              checkHypeAndHighScore();
+              checkProgress();
               updateHUD();
             } else {
-              // Powerup vanished
               removePopup(p);
             }
           }
         }
+
+        updateAndDrawParticles(dt);
+
+        if (state.running) {
+          requestAnimationFrame(gameLoop);
+        }
       }
 
-      requestAnimationFrame(gameLoop);
-    }
+      // --- RANK & LIFECYCLE ---
+      function getRank(score) {
+        if (score >= 12000) return '👑 Elite Malware Dodger';
+        if (score >= 7000) return '🛡️ uBlock Origin Enjoyer';
+        if (score >= 3500) return '📖 Megathread Reader';
+        if (score >= 1500) return '⚠️ Disabled Defender';
+        return '💀 Infected with 500KB.exe';
+      }
 
-    // --- GAME LIFECYCLE ---
-    function getRank(score) {
-      if (score >= 12000) return '👑 Cyber Legend';
-      if (score >= 7000) return '🏴‍☠️ Piracy Mod';
-      if (score >= 3500) return '🕵️ PortWatch Scout';
-      if (score >= 1500) return '👀 Reddit Lurker';
-      return '🖱️ Boomer Clicker';
-    }
+      function startGame() {
+        sfx.init();
+        state.running = true;
+        state.score = 0;
+        state.newHighScoreAchieved = false;
+        state.combo = 1;
+        state.maxCombo = 1;
+        state.health = state.maxHealth;
+        state.hypeLevel = 1;
+        state.scamsBlocked = 0;
+        state.popups = [];
+        state.particles = [];
+        state.nextSpawnTimer = 0.25;
+        state.tickerTimer = 4.0;
+        state.lastDamageReason = '';
 
-    function startGame() {
-      sfx.init();
-      // Clear existing popups
-      popupLayer.innerHTML = '';
-      state.popups = [];
-      state.score = 0;
-      state.health = state.maxHealth;
-      state.combo = 1;
-      state.comboStreak = 0;
-      state.maxCombo = 1;
-      state.scamsBlocked = 0;
-      state.hypeLevel = 1;
-      state.elapsedTime = 0;
-      state.spawnTimer = 0.7; // quick first spawn
-      state.running = true;
+        popupLayer.innerHTML = '';
+        startScreen.classList.add('hidden');
+        gameOverScreen.classList.add('hidden');
+        gameOverScreen.classList.remove('flex');
+        newHighScoreBadge.classList.add('hidden');
 
-      startScreen.classList.add('hidden');
-      gameOverScreen.classList.add('hidden');
-      gameOverScreen.classList.remove('flex');
+        statusTicker.textContent = STATUS_MESSAGES[0];
+        updateHUD();
+        resizeCanvas();
 
-      statusTicker.textContent = STATUS_MESSAGES[Math.floor(Math.random() * STATUS_MESSAGES.length)];
+        state.lastTime = performance.now();
+        requestAnimationFrame(gameLoop);
+      }
+
+      function endGame() {
+        state.running = false;
+        popupLayer.innerHTML = '';
+        state.popups = [];
+
+        deathReasonEl.textContent = state.lastDamageReason || 'Too many fake GTA VI ports slipped through!';
+        rankTitleEl.textContent = getRank(state.score);
+        finalScoreEl.textContent = state.score.toLocaleString('en-US');
+        finalHighScoreEl.textContent = state.highScore.toLocaleString('en-US');
+        finalBlockedEl.textContent = state.scamsBlocked;
+        finalMaxComboEl.textContent = `x${state.maxCombo}`;
+
+        if (state.newHighScoreAchieved) {
+          newHighScoreBadge.classList.remove('hidden');
+        }
+
+        gameOverScreen.classList.remove('hidden');
+        gameOverScreen.classList.add('flex');
+      }
+
+      // --- EVENT LISTENERS ---
+      startBtn.addEventListener('click', startGame);
+      restartBtn.addEventListener('click', startGame);
+
+      muteBtn.addEventListener('click', () => {
+        sfx.init();
+        sfx.muted = !sfx.muted;
+        muteIcon.textContent = sfx.muted ? '🔇' : '🔊';
+      });
+
+      // Initialize HUD on load
       updateHUD();
-      spawnPopup();
-    }
-
-    function endGame() {
-      state.running = false;
-      popupLayer.innerHTML = '';
-      state.popups = [];
-
-      deathReasonEl.textContent = state.lastDamageReason || 'Te veel neppe GTA VI ports aangeklikt!';
-      rankTitleEl.textContent = getRank(state.score);
-      finalScoreEl.textContent = state.score.toLocaleString('nl-NL');
-      finalHighScoreEl.textContent = state.highScore.toLocaleString('nl-NL');
-      finalBlockedEl.textContent = state.scamsBlocked;
-      finalMaxComboEl.textContent = `x${state.maxCombo}`;
-
-      gameOverScreen.classList.remove('hidden');
-      gameOverScreen.classList.add('flex');
-    }
-
-    // --- EVENT LISTENERS & INIT ---
-    startBtn.addEventListener('click', startGame);
-    restartBtn.addEventListener('click', startGame);
-    muteBtn.addEventListener('click', () => {
-      sfx.init();
-      sfx.toggleMute();
-    });
-
-    window.addEventListener('resize', resizeCanvas);
-
-    window.onload = function () {
-      resizeCanvas();
-      updateHUD();
-      requestAnimationFrame(gameLoop);
-    };
+    })();
   </script>
 </body>
 </html>
